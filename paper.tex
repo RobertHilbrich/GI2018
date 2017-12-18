@@ -114,7 +114,39 @@ Using a domain-specific language is expedient to enable systems engineers withou
 \item Dislocality is a typical constraint in ASSIST to express these differences
 \item Simple Modeling approach for a CSP (location variables)
 \item Use allDiffererent constraint - straight forward
+\item Reality: AllDifferent for List of Lists
+\item Example to describe the differences
 \end{itemize}
+
+\section{Modeling Advanced Dislocality Constraints}
+
+\begin{itemize}
+\item Based on available tools - one option is the recursive approach
+\item Implementation is straight forward, but it requires a lot of constraints - slow in practice
+\item Another option is to react on instantiation only and remove unwanted solutions - weak in propagation
+\item Last Option is to combine inst-only approach with int-values union and alldifferent
+\end{itemize}
+
+\section{Experiments}
+
+\begin{itemize}
+\item Synthetic example generator 
+\item 10/20 Examples were generated with a parameter domain ...
+\item Search with the same strategies DomWD, minValueFirst
+\item iMac 5k, 64 GB RAM, Choco 4.0.6
+\end{itemize}
+
+\section{Results}
+
+\begin{itemize}
+\item Show results for var count, constraint count
+\item Show results for resolution time
+\item Show results for backtracks and fails
+\end{itemize}
+
+\section{Conclusions}
+
+I am a summary
 
 \printbibliography[heading=bibintoc]
 
