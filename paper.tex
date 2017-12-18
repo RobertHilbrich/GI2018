@@ -1,14 +1,17 @@
 \documentclass[english,biblatex]{lni}
 \usepackage{hyperref}
+\usepackage[backend=biber]{biblatex}
 \addbibresource{systems-engineering.bib}
 \ExecuteBibliographyOptions{}
 \graphicspath{{figures/}}
 \DeclareGraphicsExtensions{.pdf,.jpeg,.jpg,.png}
 \graphicspath{{figures/}}
 
+
 \begin{document}
+
 \title[Improving the Efficiency of Dislocality Constraints]{Improving the Efficiency of Dislocality Constraints for an Automated Software Mapping in Safety-Critical Systems}
-%%%\subtitle{Untertitel / Subtitle} % if needed
+%%% \subtitle{Untertitel / Subtitle} % if needed
 \author[Robert Hilbrich \and Michael Behrisch]
 {Robert Hilbrich\footnote{German Aerospace Center (DLR), Rutherfordstr. 2, 12489 Berlin,
 Germany \email{robert.hilbrich@dlr.de}} \and
@@ -18,6 +21,8 @@ Germany \email{michael.behrisch@dlr.de}}}
 %\editor{Herausgeber et al.} % Names of Editors
 \booktitle{SE’18: Software Engineering-Tagung der Gesellschaft für Informatik (GI)} 
 \year{2018}
+
+\startpage{1}
 
 \maketitle
 
@@ -80,8 +85,7 @@ The entire process to automatically obtain a mapping solution is depicted in Fig
 
 \begin{figure}[htbp]
   \includegraphics[width=.5\textwidth]{assist-process}
-  \caption{Process to automatically construct a solution for a mapping problem}
-  \label{fig:assist-process}
+  \caption{Process to automatically construct a solution for a mapping problem}\label{fig:assist-process}
 \end{figure}
 
 \subsection{Toolsuite ASSIST}
@@ -146,7 +150,7 @@ Using a domain-specific language is expedient to enable systems engineers withou
 
 \section{Conclusions}
 
-I am a summary
+I am a summary - what shall i put here?
 
 \printbibliography[heading=bibintoc]
 
@@ -154,6 +158,7 @@ I am a summary
 
 %%% Local Variables: 
 %%% mode: latex
+%%% TeX-master: "paper"
 %%% ispell-check-comments: exclusive
 %%% ispell-local-dictionary: "english"
 %%% End:
