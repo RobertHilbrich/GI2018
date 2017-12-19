@@ -89,32 +89,43 @@ Otherwise, the search algorithm continues with the next uninstantiated variable.
 This example also shows, that the propagation of the \textsc{NotEqual} constraint is \emph{weak}, because it affects only two variables and invalidates only 4 out of the 16 possible value combinations between two variables.
 
 \subsection{Toolsuite ASSIST}
+
 As a proof of concept for the ongoing research toward an automated construction of deployments based on Constraint Satisfaction Problems, the toolsuite \emph{Architecture Synthesis for Safety-Critical Systems (ASSIST)}~\cite{ASSIST} was developed by the authors.
-It is open source and uses the constraint solver \emph{Choco}~\cite{Prudhomme2016} internally.
-ASSIST (see Figure~\ref{tool}) allows a systems engineer to automatically construct and optimize mappings and schedules based on textual specifications of the
+It is publicly available under the Eclipse Public License 2.0 and uses the constraint solver \emph{Choco 4}~\cite{Prudhomme2016} internally.
 
-\begin{itemize}
-\item software components and hardware resources,
-\item constraints for valid/invalid assignments (\textit{dislocality}, \textit{dissimilarity}, \textit{colocality}) and 
-\item optimization goals.
-\end{itemize}
-
-The textual specifications in ASSIST conform to a domain-specific language which allows to hide the intricacies of a formal specification.
-Using a domain-specific language is expedient to enable systems engineers without a formal education in computer science to precisely specify a deployment problem.
-
-\begin{figure}[!t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{assist-screenshot}
 \caption{Screenshot of ASSIST with a specification for a control system}
 \label{tool}
 \end{figure}
 
-\section{Ensuring Redundancy by Requiring Dislocality}
+ASSIST (see Figure~\ref{tool}) allows a systems engineer to automatically construct and optimize mappings and schedules based on textual specifications of the
 
 \begin{itemize}
-\item In order to ensure a reliability / redundancy work properly - it is essential to ensure is differences
-\item Differences in the deployment of redundant software components to make sure that the errors do not appear in the same manner at the same location (zonal effects)
-\item Dislocality is a typical constraint in ASSIST to express these differences
+\item software components and hardware resources,
+\item \textit{dislocality}, \textit{dissimilarity} and \textit{colocality} requirements,
+\item optimization goals.
+\end{itemize}
+
+The textual specifications in ASSIST conform to a domain-specific language which allows to hide the intricacies of a formal specification.
+Using a domain-specific language is expedient to enable systems engineers without a formal education in computer science to precisely specify a deployment problem.
+
+\section{Ensuring Fault Tolerance by Requiring Dislocality}
+
+In order to achieve fault tolerance and reliability, it is essential to support ``significant differences'' in the choice of resources to which critical software components are deployed to.
+For instance, a simple redundancy requirement between two software components, may force the systems engineer to allocate these software components to different processing boards in different locations aboard an airplane.
+Furthermore, systematic errors and undetected design flaws in hardware components may be addressed by choosing dissimilar hardware resources, for example processors or memory blocks from different vendors.
+
+Due to the importance of choosing  ``different'' resources for fault tolerance and reliability in safety-critical systems, engineering tools for an automated construction of deployments need to be able to fully support these choices.
+ASSIST supports the engineer by offering \emph{dislocality} and \emph{dissimilarity} requirements as part of the domain specific language.
+They can be used to enforce ``differences'' for the choice of resources for the mapping of software components.
+Finding an \emph{efficient} formulation to express the semantics of each requirement as a Constraint Satisfaction Problem is challenging, but also essential in order to provide an effective toolsuite for the engineering of safety-critical systems.
+
+In order to illustrate the challenges and to present specific modeling improvements, the \emph{dislocality} requirement is used as an central example in this paper.
+Please note, that the concepts developed for \emph{dislocality} requirements can also be reused for \emph{dissimilarity} requirements.
+
+\begin{itemize}
 \item Simple Modeling approach for a CSP (location variables)
 \item Use allDiffererent constraint - straight forward
 \item Reality: AllDifferent for List of Lists
