@@ -6,7 +6,7 @@
 \graphicspath{{figures/}}
 \DeclareGraphicsExtensions{.pdf,.jpeg,.jpg,.png}
 \graphicspath{{figures/}}
-
+\usepackage{subcaption}
 
 \begin{document}
 
@@ -125,14 +125,41 @@ Finding an \emph{efficient} formulation to express the semantics of each require
 In order to illustrate the challenges and to present specific modeling improvements, the \emph{dislocality} requirement is used as an central example in this paper.
 Please note, that the concepts developed for \emph{dislocality} requirements can also be reused for \emph{dissimilarity} requirements.
 
-\begin{itemize}
-\item Simple Modeling approach for a CSP (location variables)
-\item Use allDiffererent constraint - straight forward
-\item Reality: AllDifferent for List of Lists
-\item Example to describe the differences
-\end{itemize}
+The semantics of a dislocality requirement can be illustrated with the following deployment problem (see Figure~\ref{example}).
+In the example system, there are three \emph{applications} consisting of one or more \emph{tasks}.
+Each task has to be mapped to exactly one of the \emph{processors} in the system.
+It is assumed, that the processor contains multiple cores, so that multiple tasks can be mapped to a single processor.
+However, in order to ensure fault tolerance, a \emph{dislocality} requirement is added for all applications.
+This means, that the applications must not share a processor, so that a faulty processor affects only one application.
 
-\section{Modeling Advanced Dislocality Constraints}
+\begin{figure}
+\centering
+\subcaptionbox{Simple Case}{\includegraphics[width=0.47\textwidth]{application-mapping-simple}}%
+\hfill
+\subcaptionbox{Complex Case}{\includegraphics[width=0.47\textwidth]{application-mapping-complex}}%
+\caption{An Example Deployment Problem - Mapping Tasks to Processors}
+\label{example}
+\end{figure}
+
+Expressing the basic deployment problem with constraints is straight forward.
+Each task $i$ in the system is represented by an integer variable $X_i \in \{0, 1, \dots, n-1\}$. The domain of each variable $X_i$ corresponds to the indices of the $n$ processors in the system.
+This formulation is still missing the constraints for the dislocality requirements.
+
+In the simple case, if all applications consist of only one task, this can be achieved with a single \texttt{allDifferent} constraint (see~\cite{GCCAT2014}) over all variables $X_i$.
+This situation is depicted in Figure~\ref{example}~(a).
+Fortunately, Choco 4 already contains an implementation for an \texttt{allDifferent} constraint based on the algorithm of Régin~\cite{Regin1994}.
+
+However, in reality, applications usually consist of more than just one task and tasks of the same application \emph{can} typically share the same processor.
+This situation is more complex and depicted in Figure~\ref{example}~(b).
+Unfortunately, in this case, the previous approach of applying a single \texttt{allDifferent} constraint over all variables $X_i$ can no longer be used.
+It would prevent solutions in which a processor is shared by multiple tasks of the same application.
+The existing \texttt{allDifferent} constraint only ensures, that values for a list of variables are different.
+However, the complex case requires an advanced \texttt{allDifferent} constraint operating with a list of a list of variables and ensuring that the combined values for each list of variables are different.
+Unfortunately, such a constraint is neither part of the Global Constraint Catalog~\cite{GCCAT2014} nor available in Choco 4.
+
+
+
+\section{Modeling Complex Dislocality Requirements}
 
 \begin{itemize}
 \item Based on available tools - one option is the recursive approach
