@@ -157,16 +157,39 @@ The existing \texttt{allDifferent} constraint only ensures, that values for a li
 However, the complex case requires an advanced \texttt{allDifferent} constraint operating with a list of a list of variables and ensuring that the combined values for each list of variables are different.
 Unfortunately, such a constraint is neither part of the Global Constraint Catalog~\cite{GCCAT2014} nor available in Choco 4.
 
-
-
 \section{Modeling Complex Dislocality Requirements}
 
-\begin{itemize}
-\item Based on available tools - one option is the recursive approach
-\item Implementation is straight forward, but it requires a lot of constraints - slow in practice
-\item Another option is to react on instantiation only and remove unwanted solutions - weak in propagation
-\item Last Option is to combine inst-only approach with int-values union and alldifferent
-\end{itemize}
+This section introduces three alternative implementations for the semantics of an advanced \texttt{allDifferent} constraint.
+Their performance and impact on resolution time will be analyzed and compared to each other in the next section.
+
+However, before continuing with the description of possible implementations, the semantics of an advanced \texttt{allDifferent} constraint should be described more precisely.
+The example system in Figure~\ref{example}~(b) consists of the applications $A$, $B$ and $C$.
+Each of these applications contains one or more tasks, for example $A = \{A_1, A_2\}$, $B = \{B_1, B_2\}$ and $C = \{C_1\}$.
+An advanced \texttt{allDifferent} for all applications would be operating over a list of a list of variables:
+$$\textrm{\texttt{allDifferent}}\left\{\{A_1, A_2\}, \{B_1, B_2\}, \{C_1\}\right\}$$
+Assuming that $A^\star$ combines the values for each task in application $A$:
+$$A^\star \in \mathcal{P}(\mathbb{N}) = A_1\cup A_2$$
+and $B^\star$ and $C^\star$ do the same for the applications $B$ and $C$, then the advanced \texttt{allDifferent} constraint would ensure, that the sets $A^\star$, $B^\star$ and $C^\star$ are pairwise disjunct.
+
+\subsection*{Element-wise Approach}
+
+One option to implement the advanced \texttt{allDifferent} constraint semantic is to apply the already existing \texttt{allDifferent} constraint for every subset $s$ with
+$$s = \{a,b,c \, \vert \, a \in A,  b \in B, c \in C\}$$
+For systems with a large amount of applications and several tasks within each application, the amount of constraints, that will be added to the constraint solver by this approach, may significantly affect the resolution time.
+However, this approach can be realized with the tools already available in Choco 4 and does not require any additional implementation of custom propagators and constraints.
+
+\subsection*{Instantiation-only Approach}
+
+In order to address the drawbacks of the first approach, another option is to implement a custom constraint and propagator for Choco 4 that is able to operate on a list of a list of variables.
+The propagator only reacts on instantiation events for any of the variables.
+If an instantiation is detected, then the value of the instantiated variable will be removed from the values of all variables in all the other lists.
+This approach has the advantage, that only one constraint needs to be added to the constraint solver for each dislocality requirement.
+However, this instantiation-only approach leads to a weak propagation as it only removes values, when one of the variables is instantiated.
+Therefore, this approach relies on the application of clever search strategies in order to be efficient.
+
+\subsection*{Combined Values-Union and Instantiation-Only Approach}
+
+
 
 \section{Experiments}
 
