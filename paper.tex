@@ -187,9 +187,20 @@ This approach has the advantage, that only one constraint needs to be added to t
 However, this instantiation-only approach leads to a weak propagation as it only removes values, when one of the variables is instantiated.
 Therefore, this approach relies on the application of clever search strategies in order to be efficient.
 
-\subsection*{Combined Values-Union and Instantiation-Only Approach}
+\subsection*{Combined Union-Variables and Instantiation-Only Approach}
 
+The third approach tries to build upon the instantiation-only approach and improve the strength of its propagation.
+For this purpose, a new integer variable $X^\star$ will be added for each list of variables $X = \{X_1, \dots, X_n\}$ that were provided to the advanced \texttt{allDifferent} constraint.
+The new variable $X^\star$ will contain the union of the remaining values of all variables in $X$.
+This can be achieved with a custom propagator similar to the already existing \texttt{PropSetIntValuesUnion} propagator in Choco 4.
 
+With these new ``union variables'' being available, adding a simple \texttt{allDifferent} constraint linking all of the union variables, should improve propagation.
+Please note, that these ``union variables'' must not be added to the list of variables for branching as part of the search strategy in Choco 4 as they will not always be resolved to only \emph{one} value.
+
+This approach will be combined with the instantiation-only approach from the previous section.
+However, in comparison to the instantiation-only approach, the handling of union-variables requires the addition of a new variable and a propagator for each list of variables, so there will be some overhead.
+
+Based on the description of these three approaches to implement the semantics of an advanced \texttt{allDifferent} constraint, the next sections will describe experiments conducted by the authors and preliminary results to assess and compare the performance and efficiency of each approach.
 
 \section{Experiments}
 
