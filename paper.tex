@@ -33,7 +33,7 @@ include the most relevant points. This has to be a single paragraph.
 
 
 \begin{keywords}
-Keyword1 \and Keyword2
+Model-based Systems Engineering \and Software Deployment \and Constraint Programming
 \end{keywords}
 
 
@@ -211,15 +211,51 @@ The experiments were done with the \emph{Domain over Weighted Degree} as a varia
 
 \section{Results}
 
-\begin{itemize}
-\item Show results for var count, constraint count
-\item Show results for resolution time
-\item Show results for backtracks and fails
-\end{itemize}
+The amount of constraints and variables is depicted for each example in Figure~\ref{results-constraints-count} and Figure~\ref{results-variables-count}.
+These results show, that the element-wise approach leads to a substantial increase in the amount of constraints in the solver in comparison to the other two approaches.
+However, the increase of the variable count due to the addition of union-variables in the third approach appears to be rather negligible.
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=\textwidth]{results-constraint-count}
+\caption{Amount of constraints in the Choco solver in each example}
+\label{results-constraints-count}
+\vspace*{\floatsep}
+\includegraphics[width=\textwidth]{results-variables-count}
+\caption{Amount of variables in the Choco solver in each example}
+\label{results-variables-count}
+\end{figure}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=\textwidth]{results-resolution}
+\caption{Resolution time (in ms) to reach the first solution in each example}
+\label{results-resolution}
+\end{figure}
+
+The total resolution time until the first solution has been reached is depicted in Figure~\ref{results-resolution}.
+Please note the logarithmic scale on the y-axis.
+The results show, that the resolution time can be significantly reduced in all examples by adopting the instantiation-only approach.
+Further improvements to the instantiation-only approach can be achieved by applying the combined approach, but the additional gains are significantly smaller.
+In some examples, the combined approach requires slightly more time for a resolution.
+However, the time differences in these cases are so small, that they may also be induced by external effects, such as garbage collection in Java or scheduling interferences in the operating system.
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=\textwidth]{results-backtracks}
+\caption{Amount of backtracking occurring in each example}
+\label{results-backtracks}
+\end{figure}
+
+Backtracking occurs, when the search process in the constraint solver encounters a \emph{fail} event, i.e. a variable has an empty domain after value propagation or one of the constraints determines a contradiction.
+Figure~\ref{results-backtracks} shows the amount of backtracking that occurred before finding the first solution in each example.
+One would assume, that the element-wise approach exhibits the strongest propagation due to the large amount of additional \texttt{allDifferent} constraints, so that the amount of fails and backtracks should be smaller compared to the other approaches.
+In fact, the results are mixed.
+Some examples clearly show, that the propagation of the element-wise approach is significantly stronger compared to the other approaches.
+However, there are also other examples in which the situation is reversed.
 
 \section{Conclusions}
 
-I am a summary - what shall i put here?
 
 \printbibliography[heading=bibintoc]
 
