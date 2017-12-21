@@ -10,25 +10,25 @@
 
 \begin{document}
 
-\title[Improving the Efficiency of Dislocality Constraints]{Improving the Efficiency of Dislocality Constraints for an Automated Software Mapping in Safety-Critical Systems}
-%%% \subtitle{Untertitel / Subtitle} % if needed
+\title[Improving the Efficiency of Dislocality Constraints]{Improving the Efficiency of Dislocality Constraints for an Automated Software Deployment in Safety-Critical Systems}
 \author[Robert Hilbrich \and Michael Behrisch]
 {Robert Hilbrich\footnote{German Aerospace Center (DLR), Rutherfordstr. 2, 12489 Berlin,
 Germany \email{robert.hilbrich@dlr.de}} \and
 Michael Behrisch\footnote{German Aerospace Center (DLR), Rutherfordstr. 2, 12489 Berlin,
 Germany \email{michael.behrisch@dlr.de}}}
-\startpage{11} % Beginn der Seitenzählung für diesen Beitrag / Start page
-%\editor{Herausgeber et al.} % Names of Editors
+\startpage{1}
 \booktitle{SE’18: Software Engineering-Tagung der Gesellschaft für Informatik (GI)} 
 \year{2018}
-
-\startpage{1}
 
 \maketitle
 
 \begin{abstract}
-This is a brief overview of the paper, which should be 70 to 150 words long and
-include the most relevant points. This has to be a single paragraph.
+  Mapping software components to hardware resources is a central part of the systems engineering process. 
+  This task can be automated by formalization and transformation into a Constraint Satisfaction Problem and the subsequent application of a constraint solver.
+  The toolsuite ASSIST demonstrates the feasibility of this concept.
+  In ASSIST, dislocality requirements can be specified for software components to constrain the set of valid mapping solutions and to ensure reliability and fault tolerance of the system.
+  Three approaches to model these dislocality requirements with constraints are presented.
+  They are compared to each other based on twenty synthetic mapping examples.
 \end{abstract}
 
 
@@ -41,7 +41,7 @@ Model-based Systems Engineering \and Software Deployment \and Constraint Program
 
 Engineering complex and safety-critical systems, such as flight control systems aboard an airplane, is still challenging and costly.
 Despite recent advancements in our model-based tool suites and engineering methods, the design of these systems still bears risk and uncertainties with regard to its outcome.
-The formalization and automation of crucial engineering tasks appears to be a promising approach to tackle these challenges~\cite{Chapman2007}.
+The formalization and automation of crucial engineering tasks appears to be a promising approach to tackle these challenges~\cite{Chapman2007,Hilbrich2015}.
 Systems in these areas are engineered to implement a complex interplay between mechanical elements, electronic components, as well as (embedded) software.
 Therefore, their design has to mirror this interplay and requires the development of a hardware and software architecture.
 
@@ -49,11 +49,10 @@ In practice, these architectures can often be developed independent of each othe
 Creating this \emph{link} is referred to as the \emph{deployment} of the software components.
 Constructing a deployment requires the systems engineer to \emph{map} software components to resources and to \emph{schedule} the access to shared resources.
 Therefore, mapping refers to a \emph{spatial allocation}, while scheduling refers to a \emph{temporal allocation} of software components.
-
-The construction of a deployment is an engineering task, which not only affects the fulfillment of functional requirements by providing the necessary, but also affects the satisfaction of non-functional requirements, such as safety and reliability.
+The construction of a deployment is an engineering task, which not only affects the fulfillment of functional requirements by providing the necessary resources, but also affects the satisfaction of non-functional requirements, such as safety and reliability.
 Redundancy and fault tolerance can only be achieved, if critical software components are deployed accordingly.
 
-The construction of a deployment is a very elaborate task with zero tolerance for errors as they may jeopardize the correctness of the system.
+The construction of a deployment is a very intricate task with zero tolerance for errors as they may jeopardize the correctness of the system.
 At the same time, it requires a detailed understanding of the requirements of all software components and the capabilities of all hardware resources in the system.
 Due to the sensitivity and complexity of this task, its formalization and automation is a valuable research goal.
 
@@ -63,7 +62,7 @@ In order to achieve an automated construction of a deployment and to argue its c
 For smaller mapping problems, this has been successfully achieved based on Linear Integer Programming~\cite{Damm2006, Kugele2009}, SMT-based solvers~\cite{Voss2013} or evolutionary algorithms~\cite{White2011}.
 However, these approaches reach their limits when larger, real-world mapping problems with limited gradient information to guide a search process are considered.
 The authors instead chose to transform a mapping problem into a semantically equivalent \emph{Constraint Satisfaction Problem (CSP)}~\cite{Apt2003} and solve this CSP with \emph{Constraint Programming} techniques~\cite{Rossi2006}.
-The advantages of using Constraint Programming in comparison to other techniques lie in the availability of powerful modeling elements, such as an \textsc{allDifferent} constraint, and the ease with which custom search heuristics can be implemented.
+The advantages of using Constraint Programming in comparison to other techniques lie in the availability of powerful modeling elements, such as an \texttt{allDifferent} constraint, and the ease with which custom search heuristics can be implemented.
 
 \subsection{Constraint Satisfaction Problems}
 Constraint Programming refers to a set of techniques in artificial intelligence and operations research.
@@ -89,36 +88,36 @@ This example also shows, that the propagation of the \textsc{NotEqual} constrain
 
 \subsection{Toolsuite ASSIST}
 
-As a proof of concept for the ongoing research toward an automated construction of deployments based on Constraint Satisfaction Problems, the toolsuite \emph{Architecture Synthesis for Safety-Critical Systems (ASSIST)}~\cite{ASSIST} was developed by the authors.
-It is publicly available under the Eclipse Public License 2.0 and uses the constraint solver \emph{Choco 4}~\cite{Prudhomme2016} internally.
+As a proof of concept for the ongoing research toward an automated construction of deployments based on Constraint Satisfaction Problems, the toolsuite \emph{Architecture Synthesis for Safety-Critical Systems (ASSIST)}\footnote{See \url{https://github.com/roberthilbrich/assist}} was developed by the authors.
+It is publicly available and uses the constraint solver \emph{Choco 4.0.6}~\cite{Prudhomme2016} internally.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{assist-screenshot}
-\caption{Screenshot of ASSIST with a specification for a control system}
+\caption{Screenshot of the ASSIST User Interface}
 \label{tool}
 \end{figure}
 
-ASSIST (see Figure~\ref{tool}) allows a systems engineer to automatically construct and optimize mappings and schedules based on textual specifications of the software components and hardware resources, \textit{dislocality}, \textit{dissimilarity} and \textit{colocality} requirements, and also optimization goals.
+ASSIST allows a systems engineer to automatically construct and optimize mappings based on textual specifications of the software components and hardware resources, \textit{dislocality}, \textit{dissimilarity} and \textit{colocality} requirements, and also optimization goals.
 The textual specifications in ASSIST conform to a domain-specific language which allows to hide the intricacies of a formal specification.
-Using a domain-specific language is expedient to enable systems engineers without a formal education in computer science to precisely specify a deployment problem.
+%Using a domain-specific language is expedient to enable systems engineers without a formal education in computer science to precisely specify a deployment problem.
 
 \section{Ensuring Fault Tolerance by Requiring Dislocality}
 
 In order to achieve fault tolerance and reliability, it is essential to support ``significant differences'' in the choice of resources to which critical software components are deployed to.
-For instance, a simple redundancy requirement between two software components, may force the systems engineer to allocate these software components to different processing boards in different locations aboard an airplane.
-Furthermore, systematic errors and undetected design flaws in hardware components may be addressed by choosing dissimilar hardware resources, for example processors or memory blocks from different vendors.
+For example, a simple redundancy requirement between two software components, may force the systems engineer to allocate these software components to different processing boards in different locations aboard an airplane.
+Furthermore, systematic errors and undetected design flaws in hardware components may be addressed by choosing dissimilar hardware resources, processors or memory blocks from different vendors for example.
 
 Due to the importance of choosing  ``different'' resources for fault tolerance and reliability in safety-critical systems, engineering tools for an automated construction of deployments need to be able to fully support these choices.
 ASSIST supports the engineer by offering \emph{dislocality} and \emph{dissimilarity} requirements as part of the domain specific language.
-They can be used to enforce ``differences'' for the choice of resources for the mapping of software components.
+They can be used to enforce ``differences'' for the choice of resources during the mapping process.
 Finding an \emph{efficient} formulation to express the semantics of each requirement as a Constraint Satisfaction Problem is challenging, but also essential in order to provide an effective toolsuite for the engineering of safety-critical systems.
 
-In order to illustrate the challenges and to present specific modeling improvements, the \emph{dislocality} requirement is used as an central example in this paper.
-Please note, that the concepts developed for \emph{dislocality} requirements can also be reused for \emph{dissimilarity} requirements.
+In order to illustrate the challenges and to present specific modeling improvements, the \emph{dislocality} requirement is used as an example in this paper.
+Please note, that the concepts developed for \emph{dislocality} requirements can also be applied to \emph{dissimilarity} requirements.
 
 The semantics of a dislocality requirement can be illustrated with the following deployment problem (see Figure~\ref{example}).
-In the example system, there are three \emph{applications} consisting of one or more \emph{tasks}.
+In this example system, there are three \emph{applications} consisting of one or more \emph{tasks}.
 Each task has to be mapped to exactly one of the \emph{processors} in the system.
 It is assumed, that the processor contains multiple cores, so that multiple tasks can be mapped to a single processor.
 However, in order to ensure fault tolerance, a \emph{dislocality} requirement is added for all applications.
@@ -134,19 +133,21 @@ This means, that the applications must not share a processor, so that a faulty p
 \end{figure}
 
 Expressing the basic deployment problem with constraints is straight forward.
-Each task $i$ in the system is represented by an integer variable $X_i \in \{0, 1, \dots, n-1\}$. The domain of each variable $X_i$ corresponds to the indices of the $n$ processors in the system.
-This formulation is still missing the constraints for the dislocality requirements.
+Each task~$i$ in the system is represented by an integer variable $X_i$.
+The domain of each variable $X_i$ corresponds to the indices of the $n$ processors in the system ($X_i  \in \{0, 1, \dots, n-1\}$).
+In order to add the constraints for the dislocality requirements, two cases have to be distinguished. 
+In the simple case, in which all applications consist of only one task, a dislocality can be enforced with a single \texttt{allDifferent} constraint (see~\cite{GCCAT2014}) over all task variables $X_i$.
+This case is depicted in Figure~\ref{example}~(a).
+Fortunately, Choco 4 already contains an implementation for an \texttt{allDifferent} constraint based on the algorithm of Régin~\cite{Regin1994}, so that the simple case can be implemented.
 
-In the simple case, if all applications consist of only one task, this can be achieved with a single \texttt{allDifferent} constraint (see~\cite{GCCAT2014}) over all variables $X_i$.
-This situation is depicted in Figure~\ref{example}~(a).
-Fortunately, Choco 4 already contains an implementation for an \texttt{allDifferent} constraint based on the algorithm of Régin~\cite{Regin1994}.
-
-In real-world systems, applications usually consist of more than just one task and tasks of the same application \emph{can} typically share the same processor.
+In real-world systems, applications usually consist of more than one task.
+Furthermore, tasks of the same application usually share the same processor.
 This situation is more complex and depicted in Figure~\ref{example}~(b).
-Unfortunately, in this case, the previous approach of applying a single \texttt{allDifferent} constraint over all variables $X_i$ can no longer be used.
+Unfortunately, in this case, the previous approach of applying a single \texttt{allDifferent} constraint over all task variables $X_i$ can no longer be used.
 It would prevent solutions in which a processor is shared by multiple tasks of the same application.
-The existing \texttt{allDifferent} constraint only ensures, that values for a list of variables are different.
-However, the complex case requires an advanced \texttt{allDifferent} constraint operating with a list of a list of variables and ensuring that the combined values for each list of variables are different.
+
+The existing \texttt{allDifferent} constraint simply ensures, that values for a list of variables are different.
+However, the complex case requires an advanced \texttt{allDifferent} constraint working with \emph{a list of a list of variables} and ensuring that the combined values for each list of variables are disjunct.
 Unfortunately, such a constraint is neither part of the Global Constraint Catalog~\cite{GCCAT2014} nor available in Choco 4.
 
 \section{Modeling Complex Dislocality Requirements}
@@ -154,40 +155,40 @@ Unfortunately, such a constraint is neither part of the Global Constraint Catalo
 This section introduces three alternative implementations for the semantics of an advanced \texttt{allDifferent} constraint.
 Their performance and impact on resolution time will be analyzed and compared to each other in the next section.
 
-However, before continuing with the description of possible implementations, the semantics of an advanced \texttt{allDifferent} constraint should be described more precisely.
-The example system in Figure~\ref{example}~(b) consists of the applications $A$, $B$ and $C$.
-Each of these applications contains one or more tasks, for example $A = \{A_1, A_2\}$, $B = \{B_1, B_2\}$ and $C = \{C_1\}$.
-An advanced \texttt{allDifferent} for all applications would be operating over a list of a list of variables, for example:
+Before continuing with the description of possible implementations, the semantics of an advanced \texttt{allDifferent} constraint should be described more precisely.
+For this purpose, consider the example system in Figure~\ref{example}~(b).
+It consists of the applications $A$, $B$ and $C$.
+Each of these applications contains one or more tasks, i.e. $A = \{A_1, A_2\}$, $B = \{B_1, B_2\}$ and $C = \{C_1\}$.
+An advanced \texttt{allDifferent} for all applications would be working with a list of a list of variables, for example:
 $$\textrm{\texttt{allDifferent}}\left\{\{A_1, A_2\}, \{B_1, B_2\}, \{C_1\}\right\}$$
 Assuming that $A^\star$ combines the values for each task in application $A$:
-$$A^\star \in \mathcal{P}(\mathbb{N}) = A_1\cup A_2$$
+$$A^\star \in \mathcal{P}(\mathbb{N}) = \bigcup \left\{A_i : A_i \in A\right\} \qquad ( = A_1\cup A_2)$$
 and $B^\star$ and $C^\star$ do the same for the applications $B$ and $C$, then the advanced \texttt{allDifferent} constraint would ensure, that the sets $A^\star$, $B^\star$ and $C^\star$ are pairwise disjunct.
 
 \subsection*{Element-wise Approach}
 
 One option to implement the advanced \texttt{allDifferent} constraint semantic is to apply the already existing \texttt{allDifferent} constraint for every subset $s$ with
 $$s = \{a,b,c \, \vert \, a \in A,  b \in B, c \in C\}$$
-For systems with a large amount of applications and several tasks within each application, the amount of constraints, that will be added to the constraint solver by this approach, may significantly affect the resolution time.
+For systems with a large amount of applications and more than one task within each application, the amount of constraints, that will be added to the constraint solver by this approach, may significantly prolong the resolution time.
 However, this approach can be realized with the tools already available in Choco 4 and does not require any additional implementation of custom propagators and constraints\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/DislocalityConstraint.xtend}}.
 
 \subsection*{Instantiation-only Approach}
 
-In order to address the drawbacks of the first approach, another option is to implement a custom constraint and propagator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/choco/PropAllDiffListsOfListsInst.java}} for Choco 4 that is able to operate on a list of a list of variables.
-The propagator only reacts on instantiation events for any of the variables.
-If an instantiation is detected, then the value of the instantiated variable will be removed from the values of all variables in all the other lists.
+In order to address the drawbacks of the first approach, another option is to implement a custom constraint and propagator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/choco/PropAllDiffListsOfListsInst.java}} for Choco 4, that is able to operate on a list of a list of variables.
+For the sake of simplicity, the propagator should only react on instantiation events for any of its variables.
+If an instantiation is detected, then the value of the instantiated variable will be removed from the values of all variables in all of the \emph{other} lists.
 This approach has the advantage, that only one constraint needs to be added to the constraint solver for each dislocality requirement.
 However, this instantiation-only approach leads to a weak propagation as it only removes values, when one of the variables is instantiated.
-Therefore, this approach relies on the application of clever search strategies in order to be efficient.
+%Therefore, this approach relies on the application of clever search strategies in order to be efficient.
 
 \subsection*{Combined Union-Variables and Instantiation-Only Approach}
 
 The third approach tries to build upon the instantiation-only approach and improve the strength of its propagation.
-For this purpose, a new integer variable $X^\star$ will be added for each list of variables $X = \{X_1, \dots, X_n\}$ that were provided to the advanced \texttt{allDifferent} constraint.
+For this purpose, a new integer variable $X^\star$ will be added for each list of task variables $X = \{X_1, \dots, X_n\}$ that were provided to the advanced \texttt{allDifferent} constraint.
 The new variable $X^\star$ will contain the union of the remaining values of all variables in $X$.
 This can be achieved with a custom propagator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/choco/PropIntValuesUnion.java}} similar to the already existing \texttt{PropSetIntValuesUnion} propagator in Choco 4.
-With these new ``union variables'' being available, adding a simple \texttt{allDifferent} constraint linking all of the union variables, should improve propagation.
-Please note, that these ``union variables'' must not be added to the list of variables for branching as part of the search strategy in Choco 4 as they will not always be resolved to only \emph{one} value.
-
+With these new ``union variables'' being available, adding a simple \texttt{allDifferent} constraint, which links all of the union variables, should improve the effectiveness of the propagation.
+Please note, that these ``union variables'' must not be added to the list of variables for branching as part of the search strategy in Choco 4 as they will not always be resolved to only \emph{one} value if tasks of an application are deployed to different processors.
 This approach will be combined with the instantiation-only approach from the previous section.
 In comparison to the instantiation-only approach, the handling of union-variables requires the addition of a new variable and a propagator for each list of variables, so there is some overhead to be expected.
 
@@ -196,7 +197,7 @@ Based on the description of these three approaches to implement the semantics of
 \section{Experiments}
 
 Benchmarking the performance and efficiency of these approaches requires several example to work on.
-For this purpose, the authors developed a generator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping.benchmarking/src/ch/hilbri/assist/mapping/benchmarking/generator/MappingExampleGenerator.xtend}} for synthetic mapping problems that resemble the typical characteristics of mapping problems in safety-critical systems.
+For this purpose, the authors developed a generator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping.benchmarking/src/ch/hilbri/assist/mapping/benchmarking/generator/MappingExampleGenerator.xtend}} for synthetic mapping problems that resemble the typical characteristics of mapping problems encountered in safety-critical systems.
 Twenty randomized examples\footnote{\url{https://github.com/RobertHilbrich/assist-public/tree/master/ch.hilbri.assist.mapping.tests/resources}} with at least one solution were generated for the experiments.
 They exhibit the following properties\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping.tests/src/ch/hilbri/assist/mapping/tests/benchmarking/BenchmarkingTests.xtend}}.
 
@@ -208,12 +209,13 @@ Finally, every example features between \emph{24} and \emph{32} dislocality requ
 
 Every example was benchmarked on an Apple iMac 5k with 64GB of RAM by using ASSIST 2.3 and Choco 4.0.6.
 The experiments were done with the \emph{Domain over Weighted Degree} as a variable selector strategy and \emph{Minimum Value First} as a value selector strategy.
+The examples are publicly available in the ASSIST repository\footnote{\url{https://github.com/RobertHilbrich/assist-public/tree/master/ch.hilbri.assist.mapping.tests/resources}}.
 
 \section{Results}
 
-The amount of constraints and variables is depicted for each example in Figure~\ref{results-constraints-count} and Figure~\ref{results-variables-count}.
-These results show, that the element-wise approach leads to a substantial increase in the amount of constraints in the solver in comparison to the other two approaches.
-However, the increase of the variable count due to the addition of union-variables in the third approach appears to be rather negligible.
+The amount of constraints and variables are depicted for each example and each approach in Figure~\ref{results-constraints-count} and Figure~\ref{results-variables-count}.
+The results show, that the element-wise approach leads to a substantial increase in the amount of constraints in the solver in comparison to the other two approaches.
+However, the increase of the variable count due to the addition of union-variables for the implementation of the third approach appears to be rather negligible.
 
 \begin{figure}[h!tbp]
 \centering
@@ -235,7 +237,7 @@ However, the increase of the variable count due to the addition of union-variabl
 
 The total resolution time until the first solution has been reached is depicted in Figure~\ref{results-resolution}.
 Please note the logarithmic scale on the y-axis.
-The results show, that the resolution time can be significantly reduced in all examples by adopting the instantiation-only approach.
+The results demonstrate, that the resolution time can be significantly reduced in all examples by adopting the instantiation-only approach.
 Further improvements to the instantiation-only approach can be achieved by applying the combined approach, but the additional gains are significantly smaller.
 In some examples, the combined approach requires slightly more time for a resolution.
 However, the time differences in these cases are so small, that they may also be induced by external effects, such as garbage collection in Java or scheduling interferences in the operating system.
@@ -249,12 +251,29 @@ However, the time differences in these cases are so small, that they may also be
 
 Backtracking occurs, when the search process in the constraint solver encounters a \emph{fail} event, i.e. a variable has an empty domain after value propagation or one of the constraints determines a contradiction.
 Figure~\ref{results-backtracks} shows the amount of backtracking that occurred before finding the first solution in each example.
-One would assume, that the element-wise approach exhibits the strongest propagation due to the large amount of additional \texttt{allDifferent} constraints, so that the amount of fails and backtracks should be smaller compared to the other approaches.
-In fact, the results are mixed.
-Some examples clearly show, that the propagation of the element-wise approach is significantly stronger compared to the other approaches.
+One would assume, that the element-wise approach exhibits the strongest propagation due to the large amount of additional \texttt{allDifferent} constraints, so that the amount of fails and backtracks might be smaller compared to the other approaches.
+In fact, the results are not as clear-cut.
+Some examples show, that the propagation of the element-wise approach is significantly stronger compared to the other approaches.
 However, there are also other examples in which the situation is reversed.
 
-\section{Conclusions}
+\section{Summary and Conclusions}
+
+Ensuring significant differences in the choice of resources to which software components in safety-critical systems are deployed to, is essential for satisfying safety requirements and facilitating fault tolerance.
+ASSIST is a toolsuite for system engineers, which aims to automate the deployment of software components to hardware resources by transforming this mapping problem into an equivalent Constraint Satisfaction Problem.
+In ASSIST, there are several means to require ``differences'' in the choice of resources.
+\emph{Dislocality} requirements are one of those means and they are used as an example in this paper to illustrate the challenge of finding an efficient constraint model.
+
+Three different approaches to implement the intended semantics of dislocality requirements are presented.
+They specifically address complex use-cases in which applications consist of multiple tasks.
+While one of these approaches can be realized without any customized constraints or propagators, the other two approaches rely on custom implementations of constraints and propagators as well as additional variables in the third approach.
+
+Experiments conducted with twenty synthesized mapping examples for ASSIST show, that the implementation of custom constraints and propagators is well worth the effort.
+They lead to a substantial reduction in the resolution time with only minimal overhead due to the additional constraints and variables.
+The results also indicate, that the element-wise approach, which requires the highest amount of additional constraints, does not always lead to the lowest rate of backtracks in the examples.
+
+\section*{Acknowledgment}
+
+The authors acknowledge the financial support for this work by the Federal Ministry of Education and Research of Germany (BMBF) in the project ``ARAMiS II'' (DLR, grant identifier 01IS16025D).
 
 
 \printbibliography[heading=bibintoc]
