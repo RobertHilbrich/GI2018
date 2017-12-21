@@ -46,7 +46,7 @@ Systems in these areas are engineered to implement a complex interplay between m
 Therefore, their design has to mirror this interplay and requires the development of a hardware and software architecture.
 
 In practice, these architectures can often be developed independent of each other, but their integration in the final system requires a \emph{link} between the software components and their hardware resources.     
-This \emph{link} is referred to as a \emph{deployment} of the software components.
+Creating this \emph{link} is referred to as the \emph{deployment} of the software components.
 Constructing a deployment requires the systems engineer to \emph{map} software components to resources and to \emph{schedule} the access to shared resources.
 Therefore, mapping refers to a \emph{spatial allocation}, while scheduling refers to a \emph{temporal allocation} of software components.
 
@@ -62,8 +62,7 @@ Due to the sensitivity and complexity of this task, its formalization and automa
 In order to achieve an automated construction of a deployment and to argue its correctness, a formalization of the mapping problem is required.
 For smaller mapping problems, this has been successfully achieved based on Linear Integer Programming~\cite{Damm2006, Kugele2009}, SMT-based solvers~\cite{Voss2013} or evolutionary algorithms~\cite{White2011}.
 However, these approaches reach their limits when larger, real-world mapping problems with limited gradient information to guide a search process are considered.
-
-The authors instead chose to transform a mapping problem into a semantically equivalent \emph{Constraint Satisfaction Problem (CSP)}~\cite{Apt2003,Dechter2003} and solve this CSP with \emph{Constraint Programming} techniques~\cite{Rossi2006,Prudhomme2016}.
+The authors instead chose to transform a mapping problem into a semantically equivalent \emph{Constraint Satisfaction Problem (CSP)}~\cite{Apt2003} and solve this CSP with \emph{Constraint Programming} techniques~\cite{Rossi2006}.
 The advantages of using Constraint Programming in comparison to other techniques lie in the availability of powerful modeling elements, such as an \textsc{allDifferent} constraint, and the ease with which custom search heuristics can be implemented.
 
 \subsection{Constraint Satisfaction Problems}
@@ -100,14 +99,7 @@ It is publicly available under the Eclipse Public License 2.0 and uses the const
 \label{tool}
 \end{figure}
 
-ASSIST (see Figure~\ref{tool}) allows a systems engineer to automatically construct and optimize mappings and schedules based on textual specifications of the
-
-\begin{itemize}
-\item software components and hardware resources,
-\item \textit{dislocality}, \textit{dissimilarity} and \textit{colocality} requirements,
-\item optimization goals.
-\end{itemize}
-
+ASSIST (see Figure~\ref{tool}) allows a systems engineer to automatically construct and optimize mappings and schedules based on textual specifications of the software components and hardware resources, \textit{dislocality}, \textit{dissimilarity} and \textit{colocality} requirements, and also optimization goals.
 The textual specifications in ASSIST conform to a domain-specific language which allows to hide the intricacies of a formal specification.
 Using a domain-specific language is expedient to enable systems engineers without a formal education in computer science to precisely specify a deployment problem.
 
@@ -149,7 +141,7 @@ In the simple case, if all applications consist of only one task, this can be ac
 This situation is depicted in Figure~\ref{example}~(a).
 Fortunately, Choco 4 already contains an implementation for an \texttt{allDifferent} constraint based on the algorithm of Régin~\cite{Regin1994}.
 
-However, in reality, applications usually consist of more than just one task and tasks of the same application \emph{can} typically share the same processor.
+In real-world systems, applications usually consist of more than just one task and tasks of the same application \emph{can} typically share the same processor.
 This situation is more complex and depicted in Figure~\ref{example}~(b).
 Unfortunately, in this case, the previous approach of applying a single \texttt{allDifferent} constraint over all variables $X_i$ can no longer be used.
 It would prevent solutions in which a processor is shared by multiple tasks of the same application.
@@ -165,7 +157,7 @@ Their performance and impact on resolution time will be analyzed and compared to
 However, before continuing with the description of possible implementations, the semantics of an advanced \texttt{allDifferent} constraint should be described more precisely.
 The example system in Figure~\ref{example}~(b) consists of the applications $A$, $B$ and $C$.
 Each of these applications contains one or more tasks, for example $A = \{A_1, A_2\}$, $B = \{B_1, B_2\}$ and $C = \{C_1\}$.
-An advanced \texttt{allDifferent} for all applications would be operating over a list of a list of variables:
+An advanced \texttt{allDifferent} for all applications would be operating over a list of a list of variables, for example:
 $$\textrm{\texttt{allDifferent}}\left\{\{A_1, A_2\}, \{B_1, B_2\}, \{C_1\}\right\}$$
 Assuming that $A^\star$ combines the values for each task in application $A$:
 $$A^\star \in \mathcal{P}(\mathbb{N}) = A_1\cup A_2$$
@@ -176,11 +168,11 @@ and $B^\star$ and $C^\star$ do the same for the applications $B$ and $C$, then t
 One option to implement the advanced \texttt{allDifferent} constraint semantic is to apply the already existing \texttt{allDifferent} constraint for every subset $s$ with
 $$s = \{a,b,c \, \vert \, a \in A,  b \in B, c \in C\}$$
 For systems with a large amount of applications and several tasks within each application, the amount of constraints, that will be added to the constraint solver by this approach, may significantly affect the resolution time.
-However, this approach can be realized with the tools already available in Choco 4 and does not require any additional implementation of custom propagators and constraints.
+However, this approach can be realized with the tools already available in Choco 4 and does not require any additional implementation of custom propagators and constraints\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/DislocalityConstraint.xtend}}.
 
 \subsection*{Instantiation-only Approach}
 
-In order to address the drawbacks of the first approach, another option is to implement a custom constraint and propagator for Choco 4 that is able to operate on a list of a list of variables.
+In order to address the drawbacks of the first approach, another option is to implement a custom constraint and propagator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/choco/PropAllDiffListsOfListsInst.java}} for Choco 4 that is able to operate on a list of a list of variables.
 The propagator only reacts on instantiation events for any of the variables.
 If an instantiation is detected, then the value of the instantiated variable will be removed from the values of all variables in all the other lists.
 This approach has the advantage, that only one constraint needs to be added to the constraint solver for each dislocality requirement.
@@ -192,24 +184,30 @@ Therefore, this approach relies on the application of clever search strategies i
 The third approach tries to build upon the instantiation-only approach and improve the strength of its propagation.
 For this purpose, a new integer variable $X^\star$ will be added for each list of variables $X = \{X_1, \dots, X_n\}$ that were provided to the advanced \texttt{allDifferent} constraint.
 The new variable $X^\star$ will contain the union of the remaining values of all variables in $X$.
-This can be achieved with a custom propagator similar to the already existing \texttt{PropSetIntValuesUnion} propagator in Choco 4.
-
+This can be achieved with a custom propagator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/choco/PropIntValuesUnion.java}} similar to the already existing \texttt{PropSetIntValuesUnion} propagator in Choco 4.
 With these new ``union variables'' being available, adding a simple \texttt{allDifferent} constraint linking all of the union variables, should improve propagation.
 Please note, that these ``union variables'' must not be added to the list of variables for branching as part of the search strategy in Choco 4 as they will not always be resolved to only \emph{one} value.
 
 This approach will be combined with the instantiation-only approach from the previous section.
-However, in comparison to the instantiation-only approach, the handling of union-variables requires the addition of a new variable and a propagator for each list of variables, so there will be some overhead.
+In comparison to the instantiation-only approach, the handling of union-variables requires the addition of a new variable and a propagator for each list of variables, so there is some overhead to be expected.
 
 Based on the description of these three approaches to implement the semantics of an advanced \texttt{allDifferent} constraint, the next sections will describe experiments conducted by the authors and preliminary results to assess and compare the performance and efficiency of each approach.
 
 \section{Experiments}
 
-\begin{itemize}
-\item Synthetic example generator 
-\item 10/20 Examples were generated with a parameter domain ...
-\item Search with the same strategies DomWD, minValueFirst
-\item iMac 5k, 64 GB RAM, Choco 4.0.6
-\end{itemize}
+Benchmarking the performance and efficiency of these approaches requires several example to work on.
+For this purpose, the authors developed a generator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping.benchmarking/src/ch/hilbri/assist/mapping/benchmarking/generator/MappingExampleGenerator.xtend}} for synthetic mapping problems that resemble the typical characteristics of mapping problems in safety-critical systems.
+Twenty randomized examples\footnote{\url{https://github.com/RobertHilbrich/assist-public/tree/master/ch.hilbri.assist.mapping.tests/resources}} with at least one solution were generated for the experiments.
+They exhibit the following properties\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping.tests/src/ch/hilbri/assist/mapping/tests/benchmarking/BenchmarkingTests.xtend}}.
+
+In each example, there are \emph{two} compartments, each containing between \emph{four} and \emph{six} boxes.
+Each box contains between \emph{four} and \emph{six} processing boards and every processing board is equipped with \emph{one} or \emph{two} processors each comprising of up to \emph{four} cores.
+The examples contain between \emph{16} and \emph{24} applications and each of these applications have between \emph{two} and \emph{eight} tasks that need to be mapped to the cores on the processors.
+All tasks of an application are required to be placed on the same processing board to allow for memory-based communication (colocality requirement).
+Finally, every example features between \emph{24} and \emph{32} dislocality requirements and each of these requirements refers to at least \emph{four} and up to \emph{six} applications.
+
+Every example was benchmarked on an Apple iMac 5k with 64GB of RAM by using ASSIST 2.3 and Choco 4.0.6.
+The experiments were done with the \emph{Domain over Weighted Degree} as a variable selector strategy and \emph{Minimum Value First} as a value selector strategy.
 
 \section{Results}
 
