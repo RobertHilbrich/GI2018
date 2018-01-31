@@ -1,24 +1,33 @@
-\documentclass[english,biblatex]{lni}
-\usepackage{hyperref}
-\usepackage[backend=biber]{biblatex}
-\addbibresource{systems-engineering.bib}
-\ExecuteBibliographyOptions{}
+\documentclass[conference]{IEEEtran}
+
+\usepackage[pdftex]{graphicx}
 \graphicspath{{figures/}}
 \DeclareGraphicsExtensions{.pdf,.jpeg,.jpg,.png}
-\graphicspath{{figures/}}
-\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage[caption=false]{subfig}
+\usepackage{url}
+\usepackage{flushend}
 
 \begin{document}
 
-\title[Improving the Efficiency of Dislocality Constraints]{Improving the Efficiency of Dislocality Constraints for an Automated Software Deployment in Safety-Critical Systems}
-\author[Robert Hilbrich \and Michael Behrisch]
-{Robert Hilbrich\footnote{German Aerospace Center (DLR), Rutherfordstr. 2, 12489 Berlin,
-Germany \email{robert.hilbrich@dlr.de}} \and
-Michael Behrisch\footnote{German Aerospace Center (DLR), Rutherfordstr. 2, 12489 Berlin,
-Germany \email{michael.behrisch@dlr.de}}}
-\startpage{1}
-\booktitle{SE’18: Software Engineering-Tagung der Gesellschaft für Informatik (GI)} 
-\year{2018}
+\title{Improving the Efficiency of Dislocality Constraints for an Automated Software Deployment in Safety-Critical Systems}
+
+\author{\IEEEauthorblockN{Dr. Robert Hilbrich}
+\IEEEauthorblockA{German Aerospace Center\\
+  Rutherfordstr. 2\\
+  12489 Berlin, Germany\\
+  Email: \url{robert.hilbrich@dlr.de}}
+\and
+\IEEEauthorblockN{Dr. Michael Behrisch}
+\IEEEauthorblockA{German Aerospace Center\\
+  Rutherfordstr. 2\\
+  12489 Berlin, Germany\\
+  Email: \url{michael.behrisch@dlr.de}}
+}
 
 \maketitle
 
@@ -31,16 +40,15 @@ Germany \email{michael.behrisch@dlr.de}}}
   They are compared to each other based on twenty synthetic mapping examples.
 \end{abstract}
 
-
-\begin{keywords}
-Model-based Systems Engineering \and Software Deployment \and Constraint Programming
-\end{keywords}
-
+%\begin{keywords}
+%Model-based Systems Engineering \and Software Deployment \and Constraint Programming
+%\end{keywords}
 
 \section{Introduction}
 
 Engineering complex and safety-critical systems, such as flight control systems aboard an airplane, is still challenging and costly.
 Despite recent advancements in our model-based tool suites and engineering methods, the design of these systems still bears risk and uncertainties with regard to its outcome.
+
 The formalization and automation of crucial engineering tasks appears to be a promising approach to tackle these challenges~\cite{Chapman2007,Hilbrich2015}.
 Systems in these areas are engineered to implement a complex interplay between mechanical elements, electronic components, as well as (embedded) software.
 Therefore, their design has to mirror this interplay and requires the development of a hardware and software architecture.
@@ -49,10 +57,10 @@ In practice, these architectures can often be developed independent of each othe
 Creating this \emph{link} is referred to as the \emph{deployment} of the software components.
 Constructing a deployment requires the systems engineer to \emph{map} software components to resources and to \emph{schedule} the access to shared resources.
 Therefore, mapping refers to a \emph{spatial allocation}, while scheduling refers to a \emph{temporal allocation} of software components.
+
 The construction of a deployment is an engineering task, which not only affects the fulfillment of functional requirements by providing the necessary resources, but also affects the satisfaction of non-functional requirements, such as safety and reliability.
 Redundancy and fault tolerance can only be achieved, if critical software components are deployed accordingly.
-
-The construction of a deployment is a very intricate task with zero tolerance for errors as they may jeopardize the correctness of the system.
+Deploying software components is a very intricate task with zero tolerance for errors as they may jeopardize the correctness of the system.
 At the same time, it requires a detailed understanding of the requirements of all software components and the capabilities of all hardware resources in the system.
 Due to the sensitivity and complexity of this task, its formalization and automation is a valuable research goal.
 
@@ -60,7 +68,10 @@ Due to the sensitivity and complexity of this task, its formalization and automa
 
 In order to achieve an automated construction of a deployment and to argue its correctness, a formalization of the mapping problem is required.
 For smaller mapping problems, this has been successfully achieved based on Linear Integer Programming~\cite{Damm2006, Kugele2009}, SMT-based solvers~\cite{Voss2013} or evolutionary algorithms~\cite{White2011}.
-However, these approaches reach their limits when larger, real-world mapping problems with limited gradient information to guide a search process are considered.
+However, these approaches reach their limits when larger, real-world mapping problems are considered.
+On the one hand, methods based on integer programming techniques are typically unable to provide solutions in a short timespan (20 minutes), when the complexity of the system reaches the level of real-world systems.
+Heuristic approaches based on evolutionary algorithms on the other hand are usually unable to cope with limited gradient information to guide a search process, because the design space of real-world systems often contains many discontinuities. 
+
 The authors instead chose to transform a mapping problem into a semantically equivalent \emph{Constraint Satisfaction Problem (CSP)}~\cite{Apt2003} and solve this CSP with \emph{Constraint Programming} techniques~\cite{Rossi2006}.
 The advantages of using Constraint Programming in comparison to other techniques lie in the availability of powerful modeling elements, such as an \texttt{allDifferent} constraint, and the ease with which custom search heuristics can be implemented.
 
@@ -88,15 +99,15 @@ This example also shows, that the propagation of the \textsc{NotEqual} constrain
 
 \subsection{Toolsuite ASSIST}
 
-As a proof of concept for the ongoing research toward an automated construction of deployments based on Constraint Satisfaction Problems, the toolsuite \emph{Architecture Synthesis for Safety-Critical Systems (ASSIST)}\footnote{See \url{https://github.com/roberthilbrich/assist}} was developed by the authors.
-It is publicly available and uses the constraint solver \emph{Choco 4.0.6}~\cite{Prudhomme2016} internally.
-
-\begin{figure}[htbp]
+\begin{figure*}[ht!]
 \centering
-\includegraphics[width=\textwidth]{assist-screenshot}
+\includegraphics[width=.9\textwidth]{assist-screenshot}
 \caption{Screenshot of the ASSIST User Interface}
 \label{tool}
-\end{figure}
+\end{figure*}
+
+As a proof of concept for the ongoing research toward an automated construction of deployments based on Constraint Satisfaction Problems, the toolsuite \emph{Architecture Synthesis for Safety-Critical Systems (ASSIST)} was developed by the authors.
+It is publicly available and uses the constraint solver \emph{Choco 4.0.6}~\cite{Prudhomme2016} internally.
 
 ASSIST allows a systems engineer to automatically construct and optimize mappings based on textual specifications of the software components and hardware resources, \textit{dislocality}, \textit{dissimilarity} and \textit{colocality} requirements, and also optimization goals.
 The textual specifications in ASSIST conform to a domain-specific language which allows to hide the intricacies of a formal specification.
@@ -123,14 +134,13 @@ It is assumed, that the processor contains multiple cores, so that multiple task
 However, in order to ensure fault tolerance, a \emph{dislocality} requirement is added for all applications.
 This means, that the applications must not share a processor, so that a faulty processor affects only one application.
 
-\begin{figure}
-\centering
-\subcaptionbox{Simple Case}{\includegraphics[width=0.47\textwidth]{application-mapping-simple}}%
-\hfill
-\subcaptionbox{Complex Case}{\includegraphics[width=0.47\textwidth]{application-mapping-complex}}%
-\caption{An Example Deployment Problem - Mapping Tasks to Processors}
-\label{example}
-\end{figure}
+\begin{figure*}
+  \subfloat[Simple Case]{\includegraphics[width=0.43\textwidth]{application-mapping-simple}}
+  \hfill
+  \subfloat[Complex Case]{\includegraphics[width=0.43\textwidth]{application-mapping-complex}}
+  \caption{An Example Deployment Problem - Mapping Tasks to Processors}
+  \label{example}
+\end{figure*}
 
 Expressing the basic deployment problem with constraints is straight forward.
 Each task~$i$ in the system is represented by an integer variable $X_i$.
@@ -170,11 +180,11 @@ and $B^\star$ and $C^\star$ do the same for the applications $B$ and $C$, then t
 One option to implement the advanced \texttt{allDifferent} constraint semantic is to apply the already existing \texttt{allDifferent} constraint for every subset $s$ with
 $$s = \{a,b,c \, \vert \, a \in A,  b \in B, c \in C\}$$
 For systems with a large amount of applications and more than one task within each application, the amount of constraints, that will be added to the constraint solver by this approach, may significantly prolong the resolution time.
-However, this approach can be realized with the tools already available in Choco 4 and does not require any additional implementation of custom propagators and constraints\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/DislocalityConstraint.xtend}}.
+However, this approach can be realized with the tools already available in Choco 4 and does not require any additional implementation of custom propagators and constraints.
 
 \subsection*{Instantiation-only Approach}
 
-In order to address the drawbacks of the first approach, another option is to implement a custom constraint and propagator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/choco/PropAllDiffListsOfListsInst.java}} for Choco 4, that is able to operate on a list of a list of variables.
+In order to address the drawbacks of the first approach, another option is to implement a custom constraint and propagator for Choco 4, that is able to operate on a list of a list of variables.
 For the sake of simplicity, the propagator should only react on instantiation events for any of its variables.
 If an instantiation is detected, then the value of the instantiated variable will be removed from the values of all variables in all of the \emph{other} lists.
 This approach has the advantage, that only one constraint needs to be added to the constraint solver for each dislocality requirement.
@@ -186,8 +196,9 @@ However, this instantiation-only approach leads to a weak propagation as it only
 The third approach tries to build upon the instantiation-only approach and improve the strength of its propagation.
 For this purpose, a new integer variable $X^\star$ will be added for each list of task variables $X = \{X_1, \dots, X_n\}$ that were provided to the advanced \texttt{allDifferent} constraint.
 The new variable $X^\star$ will contain the union of the remaining values of all variables in $X$.
-This can be achieved with a custom propagator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping/src/ch/hilbri/assist/mapping/solver/constraints/choco/PropIntValuesUnion.java}} similar to the already existing \texttt{PropSetIntValuesUnion} propagator in Choco 4.
+This can be achieved with a custom propagator similar to the already existing \texttt{PropSetIntValuesUnion} propagator in Choco 4.
 With these new ``union variables'' being available, adding a simple \texttt{allDifferent} constraint, which links all of the union variables, should improve the effectiveness of the propagation.
+
 Please note, that these ``union variables'' must not be added to the list of variables for branching as part of the search strategy in Choco 4 as they will not always be resolved to only \emph{one} value if tasks of an application are deployed to different processors.
 This approach will be combined with the instantiation-only approach from the previous section.
 In comparison to the instantiation-only approach, the handling of union-variables requires the addition of a new variable and a propagator for each list of variables, so there is some overhead to be expected.
@@ -197,9 +208,9 @@ Based on the description of these three approaches to implement the semantics of
 \section{Experiments}
 
 Benchmarking the performance and efficiency of these approaches requires several example to work on.
-For this purpose, the authors developed a generator\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping.benchmarking/src/ch/hilbri/assist/mapping/benchmarking/generator/MappingExampleGenerator.xtend}} for synthetic mapping problems that resemble the typical characteristics of mapping problems encountered in safety-critical systems.
-Twenty randomized examples\footnote{\url{https://github.com/RobertHilbrich/assist-public/tree/master/ch.hilbri.assist.mapping.tests/resources}} with at least one solution were generated for the experiments.
-They exhibit the following properties\footnote{\url{https://github.com/RobertHilbrich/assist-public/blob/master/ch.hilbri.assist.mapping.tests/src/ch/hilbri/assist/mapping/tests/benchmarking/BenchmarkingTests.xtend}}.
+For this purpose, the authors developed a generator for synthetic mapping problems that resemble the typical characteristics of mapping problems encountered in safety-critical systems.
+Twenty randomized examples with at least one solution were generated for the experiments.
+They exhibit the following properties.
 
 In each example, there are \emph{two} compartments, each containing between \emph{four} and \emph{six} boxes.
 Each box contains between \emph{four} and \emph{six} processing boards and every processing board is equipped with \emph{one} or \emph{two} processors each comprising of up to \emph{four} cores.
@@ -209,7 +220,7 @@ Finally, every example features between \emph{24} and \emph{32} dislocality requ
 
 Every example was benchmarked on an Apple iMac 5k with 64GB of RAM by using ASSIST 2.3 and Choco 4.0.6.
 The experiments were done with the \emph{Domain over Weighted Degree} as a variable selector strategy and \emph{Minimum Value First} as a value selector strategy.
-The examples are publicly available in the ASSIST repository\footnote{\url{https://github.com/RobertHilbrich/assist-public/tree/master/ch.hilbri.assist.mapping.tests/resources}}.
+The examples are publicly available in the ASSIST repository.
 
 \section{Results}
 
@@ -217,37 +228,41 @@ The amount of constraints and variables are depicted for each example and each a
 The results show, that the element-wise approach leads to a substantial increase in the amount of constraints in the solver in comparison to the other two approaches.
 However, the increase of the variable count due to the addition of union-variables for the implementation of the third approach appears to be rather negligible.
 
-\begin{figure}[h!tbp]
+\begin{figure*}[h!tbp]
 \centering
-\includegraphics[width=\textwidth]{results-constraint-count}
+\includegraphics[width=.8\textwidth]{results-constraint-count}
 \caption{Amount of constraints in the Choco solver in each example}
 \label{results-constraints-count}
-\vspace*{\floatsep}
-\includegraphics[width=\textwidth]{results-variables-count}
-\caption{Amount of variables in the Choco solver in each example}
-\label{results-variables-count}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[h!tbp]
+\begin{figure*}[h!tbp]
+  \centering
+  \includegraphics[width=.8\textwidth]{results-variables-count}
+  \caption{Amount of variables in the Choco solver in each example}
+  \label{results-variables-count}
+\end{figure*}
+
+\begin{figure*}[h!tbp]
+  \centering
+  \includegraphics[width=.8\textwidth]{results-resolution}
+  \caption{Resolution time (in ms) to reach the first solution in each example}
+  \label{results-resolution}
+\end{figure*}
+
+\begin{figure*}[h!tbp]
 \centering
-\includegraphics[width=\textwidth]{results-resolution}
-\caption{Resolution time (in ms) to reach the first solution in each example}
-\label{results-resolution}
-\end{figure}
+\includegraphics[width=.8\textwidth]{results-backtracks}
+\caption{Amount of backtracking occurring in each example}
+\label{results-backtracks}
+\end{figure*}
 
 The total resolution time until the first solution has been reached is depicted in Figure~\ref{results-resolution}.
 Please note the logarithmic scale on the y-axis.
 The results demonstrate, that the resolution time can be significantly reduced in all examples by adopting the instantiation-only approach.
+
 Further improvements to the instantiation-only approach can be achieved by applying the combined approach, but the additional gains are significantly smaller.
 In some examples, the combined approach requires slightly more time for a resolution.
 However, the time differences in these cases are so small, that they may also be induced by external effects, such as garbage collection in Java or scheduling interferences in the operating system.
-
-\begin{figure}[h!tbp]
-\centering
-\includegraphics[width=\textwidth]{results-backtracks}
-\caption{Amount of backtracking occurring in each example}
-\label{results-backtracks}
-\end{figure}
 
 Backtracking occurs, when the search process in the constraint solver encounters a \emph{fail} event, i.e. a variable has an empty domain after value propagation or one of the constraints determines a contradiction.
 Figure~\ref{results-backtracks} shows the amount of backtracking that occurred before finding the first solution in each example.
@@ -275,10 +290,11 @@ The results also indicate, that the element-wise approach, which requires the hi
 
 The authors acknowledge the financial support for this work by the Federal Ministry of Education and Research of Germany (BMBF) in the project ``ARAMiS II'' (DLR, grant identifier 01IS16025D).
 
-
-\printbibliography[heading=bibintoc]
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,systems-engineering}
 
 \end{document}
+
 
 %%% Local Variables: 
 %%% mode: latex
